@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sber_pay/sber_pay_button.dart';
-import 'package:sber_pay/sber_pay_plugin.dart';
+import 'package:sber_pay/sber_pay.dart';
 import 'package:sber_pay/type_env.dart';
 
 void main() => runApp(const MyApp());
@@ -19,14 +19,14 @@ class _MyAppState extends State<MyApp> {
   late bool _isPluginLoading;
   late bool _isAppReadyForPay;
   late bool _isPluginInitialized;
-  late TypeInitSpay _selectedInitType;
+  late TypeInitSberPay _selectedInitType;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
     _paymentStatus = '';
-    _selectedInitType = TypeInitSpay.sandboxWithoutBankApp;
+    _selectedInitType = TypeInitSberPay.sandboxWithoutBankApp;
     _isPluginLoading = false;
     _isAppReadyForPay = false;
     _isPluginInitialized = false;
@@ -55,11 +55,11 @@ class _MyAppState extends State<MyApp> {
 
   String _selectedInitTypeText() {
     switch (_selectedInitType) {
-      case TypeInitSpay.prod:
+      case TypeInitSberPay.prod:
         return 'Прод';
-      case TypeInitSpay.sandboxRealBankApp:
+      case TypeInitSberPay.sandboxRealBankApp:
         return 'Песочница/Банк';
-      case TypeInitSpay.sandboxWithoutBankApp:
+      case TypeInitSberPay.sandboxWithoutBankApp:
         return 'Песочница';
     }
   }
@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
                   Row(
                     children: [
                       Text(_selectedInitTypeText()),
-                      PopupMenuButton<TypeInitSpay>(
+                      PopupMenuButton<TypeInitSberPay>(
                         icon: const Icon(Icons.keyboard_arrow_down_rounded),
                         initialValue: _selectedInitType,
                         onSelected: (item) {
@@ -88,16 +88,16 @@ class _MyAppState extends State<MyApp> {
                           _readyForPay();
                         },
                         itemBuilder: (context) => [
-                          const PopupMenuItem<TypeInitSpay>(
-                            value: TypeInitSpay.prod,
+                          const PopupMenuItem<TypeInitSberPay>(
+                            value: TypeInitSberPay.prod,
                             child: Text('Прод'),
                           ),
-                          const PopupMenuItem<TypeInitSpay>(
-                            value: TypeInitSpay.sandboxRealBankApp,
+                          const PopupMenuItem<TypeInitSberPay>(
+                            value: TypeInitSberPay.sandboxRealBankApp,
                             child: Text('Песочница/Банк'),
                           ),
-                          const PopupMenuItem<TypeInitSpay>(
-                            value: TypeInitSpay.sandboxWithoutBankApp,
+                          const PopupMenuItem<TypeInitSberPay>(
+                            value: TypeInitSberPay.sandboxWithoutBankApp,
                             child: Text('Песочница'),
                           ),
                         ],
@@ -135,31 +135,31 @@ class _MyAppState extends State<MyApp> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: _isPluginLoading
                     ? Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF21A038),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  ),
-                )
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF21A038),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        ),
+                      )
                     : SberPayButton(
-                  onPressed: () async {
-                    try {
-                      final result =
-                      await SberPayPlugin.payWithBankInvoiceId(
-                        apiKey: '-',
-                        merchantLogin: '-',
-                        bankInvoiceId: _controller.text,
-                        redirectUri: 'sbersdk://spay',
-                      );
-                      setState(() => _paymentStatus = result);
-                    } on PlatformException catch (e) {
-                      setState(() => _paymentStatus = e.details ?? '');
-                    }
-                  },
-                ),
+                        onPressed: () async {
+                          try {
+                            final result =
+                                await SberPayPlugin.payWithBankInvoiceId(
+                              apiKey: '-',
+                              merchantLogin: '-',
+                              bankInvoiceId: _controller.text,
+                              redirectUri: 'sbersdk://spay',
+                            );
+                            setState(() => _paymentStatus = result);
+                          } on PlatformException catch (e) {
+                            setState(() => _paymentStatus = e.details ?? '');
+                          }
+                        },
+                      ),
               ),
             ],
           ),

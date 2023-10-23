@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-const String viewType = 'sber_pay_button';
-
 /// Виджет рисует нативную кнопку оплаты Сбербанка
 class SberPayButton extends StatelessWidget {
   const SberPayButton({
