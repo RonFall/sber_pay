@@ -14,7 +14,6 @@ class SberPayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onPressed?.call(),
-      behavior: HitTestBehavior.translucent,
       child: Container(
         height: 48,
         decoration: BoxDecoration(
