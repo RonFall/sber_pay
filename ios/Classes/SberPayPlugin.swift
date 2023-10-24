@@ -60,29 +60,33 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
         let bankInvoiceId = args["bankInvoiceId"] as! String
         let redirectUri = args["redirectUri"] as! String
 
-        let request = SBankInvoicePaymentRequest(
-            merchantLogin: merchantLogin,
-            bankInvoiceId: bankInvoiceId,
-            language: "RU",
-            redirectUri: redirectUri,
-            apiKey: apiKey)
-        if let topController = getTopViewController() {
-            SPay.payWithBankInvoiceId(with: topController, paymentRequest: request) { state, info  in
-                switch state {
-                case .success:
-                    result("success")
-                case .waiting:
-                    result("processing")
-                case .cancel:
-                    result("cancel")
-                case .error:
-                    result(FlutterError(code: "-", message: "Ошибка оплаты", details: info))
-                @unknown default:
-                    result(FlutterError(code: "-", message: "Неопределенная ошибка", details: info))
-                }
-            }
+        if bankInvoiceId.count != 32 {
+            result(FlutterError(code: "-", message: "Длина bankInvoiceId должна быть 32 символа", details: nil))
         } else {
-            result(FlutterError(code: "PluginError", message: "SberPay: Failed to implement controller", details: nil))
+            let request = SBankInvoicePaymentRequest(
+                merchantLogin: merchantLogin,
+                bankInvoiceId: bankInvoiceId,
+                language: "RU",
+                redirectUri: redirectUri,
+                apiKey: apiKey)
+            if let topController = getTopViewController() {
+                SPay.payWithBankInvoiceId(with: topController, paymentRequest: request) { state, info  in
+                    switch state {
+                    case .success:
+                        result("success")
+                    case .waiting:
+                        result("processing")
+                    case .cancel:
+                        result("cancel")
+                    case .error:
+                        result(FlutterError(code: "-", message: "Ошибка оплаты", details: info))
+                    @unknown default:
+                        result(FlutterError(code: "-", message: "Неопределенная ошибка", details: info))
+                    }
+                }
+            } else {
+                result(FlutterError(code: "PluginError", message: "SberPay: Failed to implement controller", details: nil))
+            }
         }
     }
 
