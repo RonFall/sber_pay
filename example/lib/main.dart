@@ -159,6 +159,7 @@ class _MyAppState extends State<MyApp> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Введите bankInvoiceID'),
+                                    duration: Duration(seconds: 2),
                                   ),
                                 );
                               } else {
