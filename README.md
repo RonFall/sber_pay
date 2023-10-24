@@ -171,4 +171,4 @@ POST https://3dsec.sberbank.ru/payment/rest/register.do
 заказ приходит только один `sbolBankInvoiceId`, если он применялся, то повторно использоваться не может. Даже если
 пользователь отменил оплату.
 
-[](https://github.com/RonFall/sber_pay/blob/master/appDemo.gif)
+![](https://github.com/RonFall/sber_pay/blob/master/appDemo.gif)
