@@ -173,5 +173,5 @@ POST https://3dsec.sberbank.ru/payment/rest/register.do
 пользователь отменил оплату.
 
 <p align="center">
-    <img src="https://github.com/RonFall/sber_pay/blob/master/appDemo.gif" width="360" height="800"/>
+    <img src="appDemo.gif" width="360" height="800"/>
 </p>
