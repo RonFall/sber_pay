@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sber_pay/sber_pay_button.dart';
 import 'package:sber_pay/sber_pay.dart';
-import 'package:sber_pay/type_env.dart';
+import 'package:sber_pay/sber_pay_button.dart';
+import 'package:sber_pay/sber_pay_env.dart';
 
-void main() => runApp(const MyApp());
+/// Необходимо указать по данным из договора
+const String _apiKey = 'AN+1efbOj0gRlvKsOcKqPNwAAAAAAAAADA75DovvlpSfYAVNL2/CkvTa+i/B7Rn9+uZ62ufbZWJZEfdST/orBr2U6pwjJKnpKrEiYQvT2Q7JJWzLZMTbQh4IMBt1q2kIM9C9mEFU+cCm9rg2JCLGcUJ9kxct2qYn5iMzYsNxKkD5seYzYJZnKh+fHd1WF5ScQTGTPlskLbnu8DGbxtv/n6rmvQ==';
+const String _merchantLogin = '781000037371-20278740-ecomSdk';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+void main() => runApp(const SberPayExampleApp());
+
+class SberPayExampleApp extends StatefulWidget {
+  const SberPayExampleApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<SberPayExampleApp> createState() => _SberPayExampleAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _SberPayExampleAppState extends State<SberPayExampleApp> {
   late final TextEditingController _controller;
   late String _paymentStatus;
   late bool _isPluginLoading;
   late bool _isAppReadyForPay;
   late bool _isPluginInitialized;
-  late TypeInitSberPay _selectedInitType;
+  late SberPayEnv _selectedInitType;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
     _paymentStatus = '';
-    _selectedInitType = TypeInitSberPay.sandboxWithoutBankApp;
+    _selectedInitType = SberPayEnv.sandboxWithoutBankApp;
     _isPluginLoading = false;
     _isAppReadyForPay = false;
     _isPluginInitialized = false;
@@ -37,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     setState(() => _isPluginLoading = true);
     _isPluginInitialized = await SberPayPlugin.initSberPay(
       env: _selectedInitType.name,
-      enableBnpl: true,
+      bnplPlan: true,
     );
     if (mounted) setState(() {});
 
@@ -54,72 +58,100 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  String _selectedInitTypeText() {
-    switch (_selectedInitType) {
-      case TypeInitSberPay.prod:
-        return 'Прод';
-      case TypeInitSberPay.sandboxRealBankApp:
-        return 'Песочница/Банк';
-      case TypeInitSberPay.sandboxWithoutBankApp:
-        return 'Песочница';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF21A038)),
+        useMaterial3: true,
+      ),
       home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(
-          child: Builder(
-            builder: (context) {
-              return Column(
+        appBar: AppBar(
+          title: const Text('SberPay plugin example'),
+          backgroundColor: const Color(0xFF21A038),
+          centerTitle: true,
+        ),
+        body: Builder(
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Тип запуска:'),
-                      Row(
-                        children: [
-                          Text(_selectedInitTypeText()),
-                          PopupMenuButton<TypeInitSberPay>(
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                            ),
-                            initialValue: _selectedInitType,
-                            onSelected: (item) {
-                              setState(() => _selectedInitType = item);
-                              _readyForPay();
-                            },
-                            itemBuilder: (context) => [
-                              const PopupMenuItem<TypeInitSberPay>(
-                                value: TypeInitSberPay.prod,
-                                child: Text('Прод'),
+                  Table(
+                      border: TableBorder.all(),
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
+                      children: [
+                        _tableRowWrapper(
+                          'Тип запуска:',
+                          Column(
+                            children: [
+                              ChoiceChip(
+                                label: const Text('Прод'),
+                                selected: _selectedInitType == SberPayEnv.prod,
+                                onSelected: (_) {
+                                  setState(
+                                    () => _selectedInitType = SberPayEnv.prod,
+                                  );
+                                  _readyForPay();
+                                },
                               ),
-                              const PopupMenuItem<TypeInitSberPay>(
-                                value: TypeInitSberPay.sandboxRealBankApp,
-                                child: Text('Песочница/Банк'),
+                              const SizedBox(width: 10),
+                              ChoiceChip(
+                                label: const Text('Песочница/Банк'),
+                                selected: _selectedInitType ==
+                                    SberPayEnv.sandboxRealBankApp,
+                                onSelected: (_) {
+                                  setState(() => _selectedInitType =
+                                      SberPayEnv.sandboxRealBankApp);
+                                  _readyForPay();
+                                },
                               ),
-                              const PopupMenuItem<TypeInitSberPay>(
-                                value: TypeInitSberPay.sandboxWithoutBankApp,
-                                child: Text('Песочница'),
+                              const SizedBox(width: 10),
+                              ChoiceChip(
+                                label: const Text('Песочница'),
+                                selected: _selectedInitType ==
+                                    SberPayEnv.sandboxWithoutBankApp,
+                                onSelected: (_) {
+                                  setState(() => _selectedInitType =
+                                      SberPayEnv.sandboxWithoutBankApp);
+                                  _readyForPay();
+                                },
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Text(
-                    'Плагин инициализирован: ${_isPluginLoading ? 'Загрузка' : _isPluginInitialized ? "ДА" : "НЕТ"}',
-                  ),
-                  Text(
-                    'Оплата доступна: ${_isPluginLoading ? 'Загрузка' : _isAppReadyForPay ? "ДА" : "НЕТ"}',
-                  ),
-                  Text(
-                    'Статус операции оплаты:  ${_paymentStatus.isEmpty ? "Оплата не производилась" : _paymentStatus}',
-                  ),
+                        ),
+                        _tableRowWrapper(
+                          'Плагин проинициализирован',
+                          Text(
+                            _isPluginLoading
+                                ? 'Загрузка'
+                                : _isPluginInitialized
+                                    ? "ДА"
+                                    : "НЕТ",
+                          ),
+                        ),
+                        _tableRowWrapper(
+                          'Оплата доступна',
+                          Text(
+                            _isPluginLoading
+                                ? 'Загрузка'
+                                : _isAppReadyForPay
+                                    ? "ДА"
+                                    : "НЕТ",
+                          ),
+                        ),
+                        _tableRowWrapper(
+                          'Статус операции оплаты',
+                          Text(
+                            _paymentStatus.isEmpty
+                                ? "Оплата не производилась"
+                                : _paymentStatus,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ]),
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -127,7 +159,7 @@ class _MyAppState extends State<MyApp> {
                       controller: _controller,
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
-                        hintText: 'bankInvoiceID',
+                        hintText: 'Введите bankInvoiceID',
                         suffixIcon: GestureDetector(
                           onTap: () {
                             _controller.clear();
@@ -156,6 +188,16 @@ class _MyAppState extends State<MyApp> {
                           )
                         : SberPayButton(
                             onPressed: () async {
+                              if (_apiKey.isEmpty || _merchantLogin.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Не заданы apiKey и/или merchantLogin',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               if (_controller.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -167,8 +209,8 @@ class _MyAppState extends State<MyApp> {
                                 try {
                                   final result =
                                       await SberPayPlugin.payWithBankInvoiceId(
-                                    apiKey: '-',
-                                    merchantLogin: '-',
+                                    apiKey: _apiKey,
+                                    merchantLogin: _merchantLogin,
                                     bankInvoiceId: _controller.text,
                                     redirectUri: 'sbersdk://spay',
                                   );
@@ -183,11 +225,23 @@ class _MyAppState extends State<MyApp> {
                           ),
                   ),
                 ],
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
+    );
+  }
+
+  TableRow _tableRowWrapper(String title, Widget secondChild) {
+    return TableRow(
+      children: [
+        TableCell(child: Text(title, textAlign: TextAlign.center)),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Center(child: secondChild),
+        ),
+      ],
     );
   }
 }

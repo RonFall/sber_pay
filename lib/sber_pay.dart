@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:sber_pay/type_env.dart';
 
 class SberPayPlugin {
   static const methodChannel = MethodChannel('sber_pay');
@@ -9,19 +8,19 @@ class SberPayPlugin {
   /// него нет API (коллбека) для выполнения кода после завершения
   /// инициализации.
   ///
-  /// [env] - среда запуска, которая определяется через [TypeInitSberPay].
+  /// [env] - среда запуска, которая определяется через [SberPayEnv].
   ///
-  /// [enableBnpl] - включить оплату частями. Может быть доступна не всегда,
+  /// [bnplPlan] - включить оплату частями. Может быть доступна не всегда,
   /// даже если true.
   static Future<bool> initSberPay({
     required String env,
-    required bool enableBnpl,
+    required bool bnplPlan,
   }) async {
     final result = await methodChannel.invokeMethod<bool>(
       'init',
       {
         'env': env,
-        'enableBnpl': enableBnpl,
+        'bnplPlan': bnplPlan,
       },
     );
     return result ?? false;
@@ -35,7 +34,7 @@ class SberPayPlugin {
   /// задержка, чтобы дождаться инициализации SDK.
   ///
   /// Если у пользователя нет установленного сбера в режимах
-  /// [TypeInitSberPay.sandboxRealBankApp], [TypeInitSberPay.prod] - вернет
+  /// [SberPayEnv.sandboxRealBankApp], [SberPayEnv.prod] - вернет
   /// false.
   static Future<bool> isReadyForSPaySdk() async {
     final result = await methodChannel.invokeMethod<bool>('isReadyForSPaySdk');
