@@ -8,12 +8,15 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "sber_pay", binaryMessenger: registrar.messenger())
         let instance = SberPayPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
-        // Создание [addApplicationDelegate] для перехода по диплинку обратно в приложение
+        /// Создание [addApplicationDelegate] для перехода по диплинку обратно в приложение
         registrar.addApplicationDelegate(instance)
     }
 
+
     public func application(_ app: UIApplication,open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // Если диплинк содержит хост "spay", тогда происходит редирект с Сбербанка обратно в приложение
+        /// Если при открытии приложения с диплинком если он содержит хост "spay", то такой диплинк
+        /// попадает в нативный плагин. Таким образом работает возврат в приложение и получение данных нативным
+        /// SDK от приложения Сбербанк онлайн/СБОЛ
         if  url.host == "spay" {
             SPay.getAuthURL(url)
         }
@@ -23,10 +26,10 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        // Инициализация
+            /// Инициализация
         case "init":
             initialize(call, result:result)
-        // Проверка готовности к оплате
+            /// Проверка готовности к оплате
         case "isReadyForSPaySdk":
             /**
              Метод для проверки готовности к оплате.
@@ -34,10 +37,10 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
              (см. комментарий к методу). Запрос может выполняться долго.
 
              - Returns Если у пользователя нет установленного сбера в режимах SEnvironment.sandboxRealBankApp,
-              SEnvironment.prod - вернет false.
-            */
+             SEnvironment.prod - вернет false.
+             */
             result(SPay.isReadyForSPay)
-        // Оплата
+            // Оплата
         case "payWithBankInvoiceId":
             payWithBankInvoiceId(call, result: result)
         default:
@@ -52,16 +55,20 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
      - Parameter bankInvoiceId параметр, который получаем после запроса для регистрации заказа в
      шлюзе Сбера.
      - Parameter redirectUri диплинк обратно в приложение после перехода в Сбербанк
-    */
+     */
     private func payWithBankInvoiceId(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let apiKey = args["apiKey"] as! String
-        let merchantLogin = args["merchantLogin"] as! String
-        let bankInvoiceId = args["bankInvoiceId"] as! String
-        let redirectUri = args["redirectUri"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let apiKey = args["apiKey"] as? String,
+              let merchantLogin = args["merchantLogin"] as? String,
+              let bankInvoiceId = args["bankInvoiceId"] as? String,
+              let redirectUri = args["redirectUri"] as? String
+        else {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
+            return
+        }
 
         if bankInvoiceId.count != 32 {
-            result(FlutterError(code: "-", message: "Длина bankInvoiceId должна быть 32 символа", details: nil))
+            result(FlutterError(code: "-", message: "MerchantError", details: "Длина bankInvoiceId должна быть 32 символа"))
         } else {
             let request = SBankInvoicePaymentRequest(
                 merchantLogin: merchantLogin,
@@ -98,16 +105,28 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
      - Parameter SEnvironment.sandboxRealBankApp устройство с установленным Сбером;
      - Parameter SEnvironment.sandboxWithoutBankApp устройство без Сбера;
      - Parameter SEnvironment.prod устройство с установленным Сбером, работает с продовыми данными.
-    */
+     - Parameter bnplPlan Функционал Оплата частями
+     */
     private func initialize(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        var sPayStage =  SEnvironment.prod
-        if args["env"] as! String == "sandboxRealBankApp" {
-            sPayStage = SEnvironment.sandboxRealBankApp
-        } else if args["env"] as! String == "sandboxWithoutBankApp" {
-            sPayStage = SEnvironment.sandboxWithoutBankApp
+        guard let args = call.arguments as? [String: Any],
+              let env = args["env"] as? String,
+              let bnplPlan = args["bnplPlan"] as? Boolean
+        else {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
+            return
         }
-        SPay.setup(bnplPlan: true, environment: sPayStage)
+
+        var sPayStage: SEnvironment = .prod
+        switch env {
+        case "sandboxRealBankApp":
+            sPayStage = .sandboxRealBankApp
+        case "sandboxWithoutBankApp":
+            sPayStage = .sandboxWithoutBankApp
+        default:
+            break
+        }
+
+        SPay.setup(bnplPlan: bnplPlan, environment: sPayStage)
         result(true)
     }
 

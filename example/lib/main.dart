@@ -36,7 +36,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> _readyForPay() async {
     setState(() => _isPluginLoading = true);
     _isPluginInitialized = await SberPayPlugin.initSberPay(
-      _selectedInitType.name,
+      env: _selectedInitType.name,
+      enableBnpl: true,
     );
     if (mounted) setState(() {});
 

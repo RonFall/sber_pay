@@ -10,8 +10,20 @@ class SberPayPlugin {
   /// инициализации.
   ///
   /// [env] - среда запуска, которая определяется через [TypeInitSberPay].
-  static Future<bool> initSberPay(String env) async {
-    final result = await methodChannel.invokeMethod<bool>('init', {'env': env});
+  ///
+  /// [enableBnpl] - включить оплату частями. Может быть доступна не всегда,
+  /// даже если true.
+  static Future<bool> initSberPay({
+    required String env,
+    required bool enableBnpl,
+  }) async {
+    final result = await methodChannel.invokeMethod<bool>(
+      'init',
+      {
+        'env': env,
+        'enableBnpl': enableBnpl,
+      },
+    );
     return result ?? false;
   }
 
@@ -30,7 +42,7 @@ class SberPayPlugin {
     if (result == null || result == false) {
       await Future.delayed(
         const Duration(seconds: 2),
-            () async {
+        () async {
           return await methodChannel.invokeMethod<bool>('isReadyForSPaySdk');
         },
       );

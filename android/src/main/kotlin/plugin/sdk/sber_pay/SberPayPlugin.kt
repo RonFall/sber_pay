@@ -126,11 +126,12 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         SPayStage.Prod
       }
     }
+    val bnplPlan = args["bnplPlan"] as Boolean
 
     try {
       // TODO(RonFall): Нужно получать нормальный API для ожидания инициализации, в текущей
       // версии SDK такого нет
-      SPaySdkApp.getInstance().initialize(application = activity.application, stage = sPayStage, enableBnpl = true)
+      SPaySdkApp.getInstance().initialize(application = activity.application, stage = sPayStage, enableBnpl = bnplPlan)
       result.success(true)
     } catch (e: Exception) {
       result.error("-", e.localizedMessage, e.message)
