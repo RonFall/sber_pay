@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sber_pay/sber_pay.dart';
 import 'package:sber_pay/sber_pay_button.dart';
+import 'package:sber_pay/sber_pay.dart';
 import 'package:sber_pay/sber_pay_env.dart';
 
 /// Необходимо указать по данным из договора
-const String _apiKey = '';
-const String _merchantLogin = '';
+const _apiKey = '';
+const _merchantLogin = '';
+
+/// Диплинк на переход в приложение
+const _redirectUri = 'sbersdk://spay';
 
 void main() => runApp(const SberPayExampleApp());
 
@@ -84,16 +87,15 @@ class _SberPayExampleAppState extends State<SberPayExampleApp> {
                           TableCellVerticalAlignment.middle,
                       children: [
                         _tableRowWrapper(
-                          'Тип запуска:',
+                          'Тип запуска',
                           Column(
                             children: [
                               ChoiceChip(
                                 label: const Text('Прод'),
                                 selected: _selectedInitType == SberPayEnv.prod,
                                 onSelected: (_) {
-                                  setState(
-                                    () => _selectedInitType = SberPayEnv.prod,
-                                  );
+                                  setState(() =>
+                                      _selectedInitType = SberPayEnv.prod);
                                   _readyForPay();
                                 },
                               ),
@@ -124,23 +126,19 @@ class _SberPayExampleAppState extends State<SberPayExampleApp> {
                         ),
                         _tableRowWrapper(
                           'Плагин проинициализирован',
-                          Text(
-                            _isPluginLoading
-                                ? 'Загрузка'
-                                : _isPluginInitialized
-                                    ? "ДА"
-                                    : "НЕТ",
-                          ),
+                          Text(_isPluginLoading
+                              ? 'Загрузка'
+                              : _isPluginInitialized
+                                  ? "ДА"
+                                  : "НЕТ"),
                         ),
                         _tableRowWrapper(
                           'Оплата доступна',
-                          Text(
-                            _isPluginLoading
-                                ? 'Загрузка'
-                                : _isAppReadyForPay
-                                    ? "ДА"
-                                    : "НЕТ",
-                          ),
+                          Text(_isPluginLoading
+                              ? 'Загрузка'
+                              : _isAppReadyForPay
+                                  ? "ДА"
+                                  : "НЕТ"),
                         ),
                         _tableRowWrapper(
                           'Статус операции оплаты',
@@ -194,6 +192,7 @@ class _SberPayExampleAppState extends State<SberPayExampleApp> {
                                     content: Text(
                                       'Не заданы apiKey и/или merchantLogin',
                                     ),
+                                    duration: Duration(seconds: 2),
                                   ),
                                 );
                                 return;
@@ -212,7 +211,7 @@ class _SberPayExampleAppState extends State<SberPayExampleApp> {
                                     apiKey: _apiKey,
                                     merchantLogin: _merchantLogin,
                                     bankInvoiceId: _controller.text,
-                                    redirectUri: 'sbersdk://spay',
+                                    redirectUri: _redirectUri,
                                   );
                                   setState(() => _paymentStatus = result);
                                 } on PlatformException catch (e) {

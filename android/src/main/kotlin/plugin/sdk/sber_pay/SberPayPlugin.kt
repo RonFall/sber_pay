@@ -56,7 +56,7 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
             // Оплата
             "payWithBankInvoiceId" -> {
-                payWithBankInvoiceId(call, result)
+                showSberPaymentModal(call, result)
             }
 
             else -> {
@@ -74,9 +74,10 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      * @property bankInvoiceId параметр, который получаем после запроса для регистрации заказа в
      * шлюзе Сбера.
      */
-    private fun payWithBankInvoiceId(call: MethodCall, result: Result) {
+    private fun showSberPaymentModal(call: MethodCall, result: Result) {
         val args = call.arguments as Map<*, *>
         var responseSent = false // Флаг для отслеживания отправки ответа
+        var hasError = false // Флаг для отслеживания отправки ошибки
 
         try {
             val apiKey = args["apiKey"] as String
@@ -96,11 +97,16 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                             result.success("success")
                         // Оплата прошла с ошибкой
                         is PaymentResult.Error -> {
-                            if (response.merchantError is MerchantError.SdkClosedByUser) {
-                                result.success("cancel")
+                            if (!hasError) {
+                                hasError = true
+                                if (response.merchantError is MerchantError.SdkClosedByUser) {
+                                    result.success("cancel")
+                                    return@payWithBankInvoiceId
+                                }
+                                result.error("-", "MerchantError", response.merchantError?.description
+                                        ?: "Ошибка выполнения оплаты")
+                                return@payWithBankInvoiceId
                             }
-                            result.error("-", "MerchantError", response.merchantError?.description
-                                    ?: "Ошибка выполнения оплаты")
                         }
                     }
                     responseSent = true
