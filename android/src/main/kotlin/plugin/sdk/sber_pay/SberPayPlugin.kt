@@ -124,7 +124,8 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      *
      * @property SPayStage.SandboxRealBankApp устройство с установленным Сбером;
      * @property SPayStage.SandBoxWithoutBankApp устройство без Сбера;
-     * @property SPayStage.prod устройство с установленным Сбером, работает с продовыми данными.
+     * @property SPayStage.prod устройство с установленным Сбером, работает с продовыми данными;
+     * @property bnplPlan Функционал Оплата частями.
      */
     private fun initialize(call: MethodCall, result: Result) {
         val args = call.arguments as Map<*, *>
