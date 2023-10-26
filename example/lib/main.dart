@@ -5,8 +5,8 @@ import 'package:sber_pay/sber_pay_button.dart';
 import 'package:sber_pay/sber_pay_env.dart';
 
 /// Необходимо указать по данным из договора
-const String _apiKey = 'AN+1efbOj0gRlvKsOcKqPNwAAAAAAAAADA75DovvlpSfYAVNL2/CkvTa+i/B7Rn9+uZ62ufbZWJZEfdST/orBr2U6pwjJKnpKrEiYQvT2Q7JJWzLZMTbQh4IMBt1q2kIM9C9mEFU+cCm9rg2JCLGcUJ9kxct2qYn5iMzYsNxKkD5seYzYJZnKh+fHd1WF5ScQTGTPlskLbnu8DGbxtv/n6rmvQ==';
-const String _merchantLogin = '781000037371-20278740-ecomSdk';
+const String _apiKey = '';
+const String _merchantLogin = '';
 
 void main() => runApp(const SberPayExampleApp());
 
