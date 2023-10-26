@@ -125,6 +125,19 @@ android {
     <string>Данные Bluetooth собираются и отправляются на сервер для безопасного проведения оплаты</string>
 ```
 
+И еще разрешение к Wi-Fi. В `example/ios/Runner/Runner.entitlements`:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.networking.wifi-info</key>
+	<true/>
+</dict>
+</plist>
+```
+
 ### Регистрация заказа в шлюзе Сбера
 
 После внедрения на платформы плагин готов к использованию. В `example/lib/main.dart` есть пример реализации.
