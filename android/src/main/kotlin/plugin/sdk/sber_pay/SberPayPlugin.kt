@@ -125,7 +125,7 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      * @property SPayStage.SandboxRealBankApp устройство с установленным Сбером;
      * @property SPayStage.SandBoxWithoutBankApp устройство без Сбера;
      * @property SPayStage.prod устройство с установленным Сбером, работает с продовыми данными;
-     * @property bnplPlan Функционал Оплата частями.
+     * @property enableBnpl Функционал Оплата частями.
      */
     private fun initialize(call: MethodCall, result: Result) {
         val args = call.arguments as Map<*, *>
@@ -136,12 +136,12 @@ class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 SPayStage.Prod
             }
         }
-        val bnplPlan = args["bnplPlan"] as Boolean
+        val enableBnpl = args["enableBnpl"] as Boolean? ?: false
 
         try {
             // TODO(RonFall): Нужно получать нормальный API для ожидания инициализации, в текущей
             // версии SDK такого нет
-            SPaySdkApp.getInstance().initialize(application = activity.application, stage = sPayStage, enableBnpl = bnplPlan)
+            SPaySdkApp.getInstance().initialize(application = activity.application, stage = sPayStage, enableBnpl = enableBnpl)
             result.success(true)
         } catch (e: Exception) {
             result.error("-", e.localizedMessage, e.message)

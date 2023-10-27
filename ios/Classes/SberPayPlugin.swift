@@ -105,16 +105,17 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
      - Parameter SEnvironment.sandboxRealBankApp устройство с установленным Сбером;
      - Parameter SEnvironment.sandboxWithoutBankApp устройство без Сбера;
      - Parameter SEnvironment.prod устройство с установленным Сбером, работает с продовыми данными.
-     - Parameter bnplPlan Функционал Оплата частями
+     - Parameter enableBnpl Функционал Оплата частями
      */
     private func initialize(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
-              let env = args["env"] as? String,
-              let bnplPlan = args["bnplPlan"] as? Boolean
+              let env = args["env"] as? String
         else {
             result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
             return
         }
+
+        let enableBnpl = args["enableBnpl"] as? Bool ?? false
 
         var sPayStage: SEnvironment = .prod
         switch env {
@@ -126,7 +127,7 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
             break
         }
 
-        SPay.setup(bnplPlan: bnplPlan, environment: sPayStage)
+        SPay.setup(bnplPlan: enableBnpl, environment: sPayStage)
         result(true)
     }
 
