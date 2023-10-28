@@ -123,6 +123,8 @@ android {
     <string>Данные Bluetooth собираются и отправляются на сервер для безопасного проведения оплаты</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
     <string>Данные Bluetooth собираются и отправляются на сервер для безопасного проведения оплаты</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Данные локации необходимы для безопасного проведения оплаты</string>
 ```
 
 И еще разрешение к Wi-Fi. В `example/ios/Runner/Runner.entitlements`:
