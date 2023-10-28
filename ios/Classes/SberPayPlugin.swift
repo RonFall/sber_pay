@@ -2,6 +2,7 @@ import Flutter
 import UIKit
 import SPaySdk
 
+/// Плагин для оплаты с использованием SberPay.
 public class SberPayPlugin: NSObject, FlutterPlugin {
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -11,7 +12,6 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
         /// Создание [addApplicationDelegate] для перехода по диплинку обратно в приложение
         registrar.addApplicationDelegate(instance)
     }
-
 
     public func application(_ app: UIApplication,open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         /// Если при открытии приложения с диплинком если он содержит хост "spay", то такой диплинк
@@ -69,30 +69,33 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
 
         if bankInvoiceId.count != 32 {
             result(FlutterError(code: "-", message: "MerchantError", details: "Длина bankInvoiceId должна быть 32 символа"))
-        } else {
-            let request = SBankInvoicePaymentRequest(
-                merchantLogin: merchantLogin,
-                bankInvoiceId: bankInvoiceId,
-                language: "RU",
-                redirectUri: redirectUri,
-                apiKey: apiKey)
-            if let topController = getTopViewController() {
-                SPay.payWithBankInvoiceId(with: topController, paymentRequest: request) { state, info  in
-                    switch state {
-                    case .success:
-                        result("success")
-                    case .waiting:
-                        result("processing")
-                    case .cancel:
-                        result("cancel")
-                    case .error:
-                        result(FlutterError(code: "-", message: "Ошибка оплаты", details: info))
-                    @unknown default:
-                        result(FlutterError(code: "-", message: "Неопределенная ошибка", details: info))
-                    }
-                }
-            } else {
-                result(FlutterError(code: "PluginError", message: "SberPay: Failed to implement controller", details: nil))
+            return
+        }
+
+        guard let topController = getTopViewController() else {
+            result(FlutterError(code: "PluginError", message: "SberPay: Failed to implement controller", details: nil))
+            return
+        }
+
+        let request = SBankInvoicePaymentRequest(
+            merchantLogin: merchantLogin,
+            bankInvoiceId: bankInvoiceId,
+            language: "RU",
+            redirectUri: redirectUri,
+            apiKey: apiKey)
+
+        SPay.payWithBankInvoiceId(with: topController, paymentRequest: request) { state, info  in
+            switch state {
+            case .success:
+                result("success")
+            case .waiting:
+                result("processing")
+            case .cancel:
+                result("cancel")
+            case .error:
+                result(FlutterError(code: "-", message: "Ошибка оплаты", details: info))
+            @unknown default:
+                result(FlutterError(code: "-", message: "Неопределенная ошибка", details: info))
             }
         }
     }
@@ -117,14 +120,14 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
 
         let enableBnpl = args["enableBnpl"] as? Bool ?? false
 
-        var sPayStage: SEnvironment = .prod
+        let sPayStage: SEnvironment
         switch env {
         case "sandboxRealBankApp":
             sPayStage = .sandboxRealBankApp
         case "sandboxWithoutBankApp":
             sPayStage = .sandboxWithoutBankApp
         default:
-            break
+            sPayStage = .prod
         }
 
         SPay.setup(bnplPlan: enableBnpl, environment: sPayStage)
@@ -132,14 +135,12 @@ public class SberPayPlugin: NSObject, FlutterPlugin {
     }
 
     private func getTopViewController() -> UIViewController? {
-        if var topController = UIApplication.shared.keyWindow?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
+        var topController = UIApplication.shared.keyWindow?.rootViewController
 
-            return topController
+        while let presentedViewController = topController?.presentedViewController {
+            topController = presentedViewController
         }
 
-        return nil
+        return topController
     }
 }
