@@ -2,6 +2,10 @@ import 'package:flutter/services.dart';
 import 'sber_pay_env.dart';
 import 'sber_pay_payment_status.dart';
 
+/// Плагин для отображения нативной кнопки SberPay SDK
+///
+/// Все исключения (Exceptions) приходящие из методов этого класса должны
+/// обрабатываться уровнем выше.
 class SberPayPlugin {
   static const methodChannel = MethodChannel('sber_pay');
 
