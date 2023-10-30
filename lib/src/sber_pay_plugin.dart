@@ -24,7 +24,7 @@ class SberPayPlugin {
   }) async {
     final result = await methodChannel.invokeMethod<bool>('init', {
       'env': env,
-      if (enableBnpl != null) 'enableBnpl': enableBnpl,
+      'enableBnpl': enableBnpl,
     });
     return result ?? false;
   }
