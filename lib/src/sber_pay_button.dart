@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Виджет рисует нативную кнопку оплаты Сбербанка
+/// Виджет нативной кнопки оплаты Сбербанка
 class SberPayButton extends StatelessWidget {
   const SberPayButton({
     super.key,
@@ -12,8 +12,8 @@ class SberPayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onPressed?.call(),
+    return InkWell(
+      onTap: onPressed,
       child: Container(
         height: 48,
         decoration: BoxDecoration(
@@ -23,13 +23,15 @@ class SberPayButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Оплатить',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontFamily: 'SberPaySans',
-                package: 'sber_pay',
+            const Flexible(
+              child: Text(
+                'Оплатить',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: 'SberPaySans',
+                  package: 'sber_pay',
+                ),
               ),
             ),
             const SizedBox(width: 8),

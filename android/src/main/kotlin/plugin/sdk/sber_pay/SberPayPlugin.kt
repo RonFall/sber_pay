@@ -17,7 +17,7 @@ import spay.sdk.api.SPayStage
 import spay.sdk.view.SPayButton
 
 /**
- * Плагин для оплаты с использованием SberPay. Для работы нужен установленный Сбер.
+ * Плагин для оплаты с использованием SberPay. Для работы нужен установленный Сбербанк (либо Сбол).
  */
 class SberPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
