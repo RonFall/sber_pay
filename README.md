@@ -140,6 +140,13 @@ android {
 </plist>
 ```
 
+Теперь убедитесь, что у вас установлена iOS 12 в `AppFrameworkInfo.plist`:
+
+```
+<key>MinimumOSVersion</key>
+<string>12.0</string>
+```
+
 ### Регистрация заказа в шлюзе Сбера
 
 После внедрения на платформы плагин готов к использованию. В `example/lib/main.dart` есть пример реализации.
