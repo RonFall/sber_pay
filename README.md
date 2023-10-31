@@ -188,6 +188,7 @@ POST https://3dsec.sberbank.ru/payment/rest/register.do
 
 <p align="center">
     <img src="appDemo.gif" width="360" height="800"/>
+    <img src="appDemoWithBank.gif" width="360" height="800"/>
 </p>
 
 Авторы: [@artembark](https://github.com/artembark), [@RonFall](https://github.com/RonFall)
