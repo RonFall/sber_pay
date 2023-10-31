@@ -198,4 +198,5 @@ POST https://3dsec.sberbank.ru/payment/rest/register.do
     <img src="appDemoWithBank.gif" width="360" height="800"/>
 </p>
 
-Авторы: [@artembark](https://github.com/artembark), [@petrovyuri](https://github.com/petrovyuri), [@RonFall](https://github.com/RonFall)
+Авторы: [@artembark](https://github.com/artembark), [@petrovyuri](https://github.com/petrovyuri), 
+[@RonFall](https://github.com/RonFall)
