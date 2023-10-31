@@ -127,18 +127,8 @@ android {
     <string>Данные локации необходимы для безопасного проведения оплаты</string>
 ```
 
-И еще разрешение к Wi-Fi. В `example/ios/Runner/Runner.entitlements`:
-
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>com.apple.developer.networking.wifi-info</key>
-	<true/>
-</dict>
-</plist>
-```
+Также необходимо добавить в Capabilities проекта Access wi-fi information.
+Для этого необходимо выбрать: Ваш таргет → Signing & Capabilities → +Capability → Access wi-fi information.
 
 Теперь убедитесь, что у вас установлена iOS 12 в `AppFrameworkInfo.plist`:
 
