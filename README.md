@@ -130,12 +130,7 @@ android {
 Также необходимо добавить в Capabilities проекта Access wi-fi information.
 Для этого необходимо выбрать: Ваш таргет → Signing & Capabilities → +Capability → Access wi-fi information.
 
-Теперь убедитесь, что у вас установлена iOS 12 в `AppFrameworkInfo.plist`:
-
-```
-<key>MinimumOSVersion</key>
-<string>12.0</string>
-```
+Теперь необходимо убедиться, что в качестве минимальной версии iOS у вас установлена iOS 12. Сделать это можно выбрав в таргете нужную версию в настройках Minimum deployments.
 
 ### Регистрация заказа в шлюзе Сбера
 
