@@ -9,8 +9,6 @@ const _merchantLogin = '';
 /// Диплинк на переход в приложение
 const _redirectUri = 'sbersdk://spay';
 
-//TODO(RonFall): Добавить минимальную версию iOS 12 и разрешение на
-// использование Wi-Fi
 void main() => runApp(const SberPayExampleApp());
 
 class SberPayExampleApp extends StatefulWidget {
