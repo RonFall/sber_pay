@@ -66,6 +66,17 @@ android {
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
 
+Для работы с сервисом SberPay в релизе, необходимо добавить proguard в `android/app/proguard-rules.pro`:
+
+```
+-keep class spay.sdk.** { *; }
+
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+
+```
+
 ### iOS
 
 Для работы SDK в этой части отдельно объявляется обратный диплинк с приложения Сбербанка в ваше приложение. Поэтому в
@@ -183,3 +194,6 @@ POST https://3dsec.sberbank.ru/payment/rest/register.do
     <img src="appDemo.gif" width="360" height="800"/>
     <img src="appDemoWithBank.gif" width="360" height="800"/>
 </p>
+
+Авторы: [@artembark](https://github.com/artembark), [@petrovyuri](https://github.com/petrovyuri),
+[@RonFall](https://github.com/RonFall)
