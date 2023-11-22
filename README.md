@@ -66,7 +66,24 @@ android {
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
 
-Для работы с сервисом SberPay в релизе, необходимо добавить proguard в `android/app/proguard-rules.pro`:
+Для работы с сервисом SberPay в релизе, если у вас включена обфускация необходимо добавить proguard. В
+`android/app/build.gradle` по-умолчанию `shrinkResources` и `minifyEnabled` не указаны:
+
+```
+android {
+    ...
+    buildTypes {
+        release {
+            // shrinkResources и minifyEnabled не указаны, по-умолчанию true, однако лучше указать явно
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+```
+
+Теперь в `android/app/proguard-rules.pro` добавляем:
 
 ```
 -keep class spay.sdk.** { *; }
@@ -75,6 +92,21 @@ android {
   @com.google.gson.annotations.SerializedName <fields>;
 }
 
+```
+
+Если вам не нужна обфускация, тогда `shrinkResources` и `minifyEnabled` в `android/app/build.gradle` должны быть
+`false`:
+
+```
+android {
+    ...
+    buildTypes {
+        release {
+            shrinkResources false
+            minifyEnabled false
+        }
+    }
+}
 ```
 
 ### iOS
@@ -195,5 +227,5 @@ POST https://3dsec.sberbank.ru/payment/rest/register.do
     <img src="appDemoWithBank.gif" width="360" height="800"/>
 </p>
 
-Авторы: [@artembark](https://github.com/artembark), [@petrovyuri](https://github.com/petrovyuri), 
+Авторы: [@artembark](https://github.com/artembark), [@petrovyuri](https://github.com/petrovyuri),
 [@RonFall](https://github.com/RonFall)
