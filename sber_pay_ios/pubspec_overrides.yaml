@@ -1,0 +1,3 @@
+dependency_overrides:
+  sber_pay_platform_interface:
+    path: ../sber_pay_platform_interface

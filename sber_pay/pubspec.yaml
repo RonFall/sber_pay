@@ -1,0 +1,34 @@
+name: sber_pay
+description: Flutter плагин для нативного платежного сервиса SberPay.
+version: 1.2.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ^3.10.0
+
+flutter:
+  assets:
+    - assets/sberpay_logo.png
+
+  fonts:
+    - family: SberPaySans
+      fonts:
+        - asset: assets/fonts/spay_sans_text.ttf
+
+  plugin:
+    platforms:
+      android:
+        default_package: sber_pay_android
+      ios:
+        default_package: sber_pay_ios
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sber_pay_android:
+    path: ../sber_pay_android
+  sber_pay_ios:
+    path: ../sber_pay_ios
+  sber_pay_platform_interface:
+    path: ../sber_pay_platform_interface

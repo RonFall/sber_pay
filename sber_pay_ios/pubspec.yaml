@@ -1,0 +1,25 @@
+name: sber_pay_ios
+description: iOS implementation of the sber_pay plugin
+version: 1.2.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ^3.10.0
+
+flutter:
+  plugin:
+    implements: sber_pay
+    platforms:
+      ios:
+        pluginClass: SberPayPlugin
+        dartPluginClass: SberPayIOS
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sber_pay_platform_interface:
+    path: ../sber_pay_platform_interface
+
+dev_dependencies:
+  pigeon: ^16.0.0

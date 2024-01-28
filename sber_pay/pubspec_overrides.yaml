@@ -1,0 +1,7 @@
+dependency_overrides:
+  sber_pay_android:
+    path: ../sber_pay_android
+  sber_pay_ios:
+    path: ../sber_pay_ios
+  sber_pay_platform_interface:
+    path: ../sber_pay_platform_interface
